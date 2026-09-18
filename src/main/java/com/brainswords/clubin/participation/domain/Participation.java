@@ -44,20 +44,30 @@ public class Participation {
     @Column(nullable = false)
     private LocalDateTime appliedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private AttendanceStatus attendanceStatus;
+
     public Participation(Member member, Event event) {
         this.member = member;
         this.event = event;
         this.status = ParticipationStatus.APPLIED;
         this.appliedAt = LocalDateTime.now();
+        this.attendanceStatus = AttendanceStatus.NOT_CHECKED;
     }
 
     public void apply() {
         this.status = ParticipationStatus.APPLIED;
         this.appliedAt = LocalDateTime.now();
+        this.attendanceStatus = AttendanceStatus.NOT_CHECKED;
     }
 
     public void cancel() {
         this.status = ParticipationStatus.CANCELLED;
+    }
+
+    public void checkAttendance(AttendanceStatus attendanceStatus) {
+        this.attendanceStatus = attendanceStatus;
     }
 
     public boolean isApplied() {

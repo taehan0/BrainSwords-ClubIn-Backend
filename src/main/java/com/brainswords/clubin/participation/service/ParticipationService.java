@@ -6,6 +6,7 @@ import com.brainswords.clubin.event.repository.EventRepository;
 import com.brainswords.clubin.member.domain.Member;
 import com.brainswords.clubin.member.exception.MemberNotFoundException;
 import com.brainswords.clubin.member.repository.MemberRepository;
+import com.brainswords.clubin.participation.domain.AttendanceStatus;
 import com.brainswords.clubin.participation.domain.Participation;
 import com.brainswords.clubin.participation.domain.ParticipationStatus;
 import com.brainswords.clubin.participation.dto.ParticipationResponse;
@@ -16,6 +17,8 @@ import com.brainswords.clubin.participation.repository.ParticipationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -61,5 +64,26 @@ public class ParticipationService {
                 .orElseThrow(ParticipationNotFoundException::new);
 
         participation.cancel();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ParticipationResponse> getParticipants(Long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new EventNotFoundException();
+        }
+
+        return participationRepository.findAllByEventId(eventId).stream()
+                .map(ParticipationResponse::from)
+                .toList();
+    }
+
+    public ParticipationResponse checkAttendance(Long eventId, Long memberId, AttendanceStatus attendanceStatus) {
+        Participation participation = participationRepository.findByMemberIdAndEventId(memberId, eventId)
+                .filter(Participation::isApplied)
+                .orElseThrow(ParticipationNotFoundException::new);
+
+        participation.checkAttendance(attendanceStatus);
+
+        return ParticipationResponse.from(participation);
     }
 }
