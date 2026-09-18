@@ -1,5 +1,6 @@
 package com.brainswords.clubin.global;
 
+import com.brainswords.clubin.auth.exception.InvalidCredentialsException;
 import com.brainswords.clubin.member.exception.DuplicateLoginIdException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +14,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateLoginIdException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleDuplicateLoginId(DuplicateLoginIdException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleInvalidCredentials(InvalidCredentialsException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 

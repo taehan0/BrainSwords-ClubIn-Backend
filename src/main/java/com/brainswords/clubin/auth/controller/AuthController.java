@@ -1,5 +1,7 @@
 package com.brainswords.clubin.auth.controller;
 
+import com.brainswords.clubin.auth.dto.LoginRequest;
+import com.brainswords.clubin.auth.dto.LoginResponse;
 import com.brainswords.clubin.auth.dto.SignupRequest;
 import com.brainswords.clubin.auth.dto.SignupResponse;
 import com.brainswords.clubin.auth.service.AuthService;
@@ -27,5 +29,12 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public SignupResponse signup(@Valid @RequestBody SignupRequest request) {
         return authService.signup(request);
+    }
+
+    @Operation(summary = "로그인")
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }
