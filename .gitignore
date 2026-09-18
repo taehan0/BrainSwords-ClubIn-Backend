@@ -32,5 +32,8 @@ build/
 *.iml
 out/
 
+# VSCode
+.vscode/
+
 # Gradle Wrapper
 !gradle/wrapper/gradle-wrapper.jar
