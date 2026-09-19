@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,15 @@ public class ParticipationController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancel(@PathVariable Long eventId, @AuthenticationPrincipal Long memberId) {
         participationService.cancel(eventId, memberId);
+    }
+
+    @Operation(summary = "내 참가 신청 상태 조회")
+    @GetMapping("/me")
+    public ResponseEntity<ParticipationResponse> getMyParticipation(@PathVariable Long eventId,
+                                                                      @AuthenticationPrincipal Long memberId) {
+        return participationService.getMyParticipation(eventId, memberId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @Operation(summary = "행사 신청자 목록 조회")

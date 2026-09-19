@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +57,13 @@ public class ParticipationService {
         }
 
         return ParticipationResponse.from(participation);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<ParticipationResponse> getMyParticipation(Long eventId, Long memberId) {
+        return participationRepository.findByMemberIdAndEventId(memberId, eventId)
+                .filter(Participation::isApplied)
+                .map(ParticipationResponse::from);
     }
 
     public void cancel(Long eventId, Long memberId) {
